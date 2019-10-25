@@ -28,7 +28,7 @@ function [ estavel, tempo ]= acomod2 ( t, sys, criterio = 0.02, round_p = 4 )
   % 'S' passado por parâmetro 
   S = round ( sys .* 10^round_p ) ./ 10^round_p;
   
-  % Calcula a moda de S: valor final;
+  % Calcula a moda de S: valor final em um sistema estável;
   [ M, F, C ] = mode(S);
  
   erro  = [];  % cache de erros para verificação de padrão (crescente,
