@@ -1,4 +1,4 @@
-function [ estavel, tempo ]= acomod2 ( t, sys, criterio = 0.02, round_p = 4 )
+function [ estavel, tempo ] = acomod2 ( t, sys, criterio = 0.02, round_p = 4 )
   % função acomod2 
   %
   % @author: Leonam Teixeira de Vasconcelos
