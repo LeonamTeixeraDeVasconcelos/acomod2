@@ -24,11 +24,11 @@ function [ estavel, tempo ]= acomod2 ( t, sys, criterio = 0.02, round_p = 4 )
   %     valerá NaN.
   % 
   
-  # Arredonda em 'round_p' casas decimais, o vetor
-  # 'S' passado por parâmetro 
+  % Arredonda em 'round_p' casas decimais, o vetor
+  % 'S' passado por parâmetro 
   S = round ( sys .* 10^round_p ) ./ 10^round_p;
   
-  # Calcula a moda de S: valor final;
+  % Calcula a moda de S: valor final;
   [ M, F, C ] = mode(S);
  
   erro  = [];  % cache de erros para verificação de padrão (crescente,
@@ -45,59 +45,59 @@ function [ estavel, tempo ]= acomod2 ( t, sys, criterio = 0.02, round_p = 4 )
   cond = 0;    % condição de quebra do loop externo
   
   for i = 1:1:max(size(S))
-    # Verifica se o tamanho da cache do erro está 
-    # de acordo com o tamanho máximo
-    #
-    # - Se sim, adiciona o erro novo calculado
-    #
-    # - Se não, faz um shift de 1 elemento pra
-    # esquerda e adiciona o novo elemento na
-    # última posição da nova cache de erros.
+    % Verifica se o tamanho da cache do erro está 
+    % de acordo com o tamanho máximo
+    %
+    % - Se sim, adiciona o erro novo calculado
+    %
+    % - Se não, faz um shift de 1 elemento pra
+    % esquerda e adiciona o novo elemento na
+    % última posição da nova cache de erros.
     if (max(size(erro)) < cache )
-      # adiciona novo erro à cache de erros;
+      % adiciona novo erro à cache de erros;
       erro = [ erro abs(M - S(i)) ];
     else
-      # shift de 1 elemento à esquerda;
+      % shift de 1 elemento à esquerda;
       erro = shift(erro, max(size(erro)) - 1);
-      # adiciona novo erro na última posição 
-      # da cache, agora deslocada
+      % adiciona novo erro na última posição 
+      % da cache, agora deslocada
       erro(max(size(erro))) = abs(M - S(i));
       
-      # faz a verificação de estado do erro      
+      % faz a verificação de estado do erro      
       for j = 2:1:max(size(erro))
-        # verifica se está crescendo
+        % verifica se está crescendo
         if ( erro (j) > erro (j-1))
           state = 1;
-        # verifica se está decrescendo
+        % verifica se está decrescendo
         elseif (erro (j) < erro (j-1)) 
           state = 0;
-        # verifica se está estabilizado
+        % verifica se está estabilizado
         else
           state = 2;
         endif;
         
-        # Caso o estado do erro anterior seja
-        # estável e o erro atual também, temos
-        # que o erro está estável e o cálculo 
-        # pode parar.
-        #
-        # Para que a condição de quebra seja 
-        # atingida, o erro máximo deve ser 
-        # menor que certo limite em relação 
-        # ao valor final do sistema. Esse li-
-        # mite é igual à:
-        #     erro_max < criterio * M;
+        % Caso o estado do erro anterior seja
+        % estável e o erro atual também, temos
+        % que o erro está estável e o cálculo 
+        % pode parar.
+        %
+        % Para que a condição de quebra seja 
+        % atingida, o erro máximo deve ser 
+        % menor que certo limite em relação 
+        % ao valor final do sistema. Esse li-
+        % mite é igual à:
+        %     erro_max < criterio * M;
         if ( state_c == 2 && state == 2 && max(erro) <= criterio * M)
           cond = 1;
           break;
         endif 
-        # atualiza o estado anterior
+        % atualiza o estado anterior
         state_c = state;   
       endfor;
     endif;
     
-    # Verifica se a condição de quebra do loop foi
-    # atingida;
+    % Verifica se a condição de quebra do loop foi
+    % atingida;
     if (cond == 1)
       tempo = t(i);
       estavel = true;
